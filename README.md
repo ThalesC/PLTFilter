@@ -1,5 +1,3 @@
-# PLTFilter
-
 SETUP
 ========
 
