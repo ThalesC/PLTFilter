@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z "$(ls $HOME | grep ".PLTFilter")" ]; then
+    mkdir $HOME/.PLTFilter
+fi
+
+chmod +x all_params get_data goat pltfilter
+cp all_params get_data goat pltfilter $HOME/.PLTFilter
+
+if [ -z "$(cat $HOME/.bashrc | grep "PATH+=:$HOME/.PLTFilter")" ]; then
+    echo "PATH+=:$HOME/.PLTFilter" >> $HOME/.bashrc
+fi

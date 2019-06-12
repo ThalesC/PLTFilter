@@ -1,0 +1,96 @@
+#!/bin/bash
+
+ask_output="yes"
+files=""
+zenity_text="Select Files"
+list_title="Extract parameters"
+list_text="Select parameters to extract"
+multiple="--multiple"
+list_type="--checklist"
+for i; do
+    if [ "$i" == "-n" ]; then
+        ask_output=""
+    elif [ "$i" == "-m" ]; then
+        multiple=""
+        list_type="--radiolist"
+    elif [ "$(echo $i | grep "\-\-file\-text=")" ]; then
+        zenity_text="$(echo $i | sed "s/\-\-file\-text=//g")"
+    elif [ "$(echo $i | grep "\-\-list\-title=")" ]; then
+        list_title="$(echo $i | sed "s/\-\-list\-title=//g")"
+    elif [ "$(echo $i | grep "\-\-list\-text=")" ]; then
+        list_text="$(echo $i | sed "s/\-\-list\-text=//g")"
+    else
+        files+="$i\n"
+    fi
+done
+files=$(echo -e $files)
+
+if [ -z "$files" ]; then
+    files=$(zenity --title "$zenity_text" --file-selection $multiple --file-filter="*.plt" | tr "|" "\n")
+fi
+
+if [ -z "$files" ]; then
+    exit 1 || return 1
+fi
+
+#files="$file"
+file_quantity=$(echo "$files" | grep . | wc -l)
+
+params="$(all_params $files)"
+lines=$(echo "$params" | wc -l)
+
+dataset=""
+for i in $(seq 1 $lines); do
+    if [ -z "$(echo "$params" | sed -n ${i}p | awk '{print $2}')" ]; then
+        dataset+="0\n$i\n-\n$(echo "$params" | sed -n ${i}p | awk '{print $1}')\n"
+    else
+        dataset+="0\n$i\n$(echo "$params" | sed -n ${i}p | awk '{print $1}')\n$(echo "$params" | sed -n ${i}p | awk '{print $2}')\n"
+    fi
+done
+
+text=""
+mod=0
+dataset_params=$(echo -e $dataset | grep . | zenity --title "$list_title" --text "$list_text" --height 400 --width 500 --list $list_type --column "" --column index --column Electrode --column Parameter --hide-column 2 --print-column all --separator " ")
+
+if [ -z "$dataset_params" ]; then
+    exit 1 || return 1
+fi
+
+for i in $dataset_params; do
+    if [ $((mod%3)) -eq 2 ]; then
+        text+="$i\n"
+    else 
+        text+="$i "
+    fi
+    mod=$((mod+1))
+done
+
+if [ "$ask_output" ]; then
+    path=$(zenity --title "Save to Folder" --file-selection --save --directory)
+    if [ -z "$path" ]; then
+        exit 1 || return 1
+    fi
+    if [ ! -d "$path" ]; then
+        mkdir "$path"
+    fi
+fi
+
+for i in $(seq 1 $(echo -e $text | grep . | wc -l)); do
+    for j in $(seq 1 $file_quantity); do
+        if [ "$ask_output" ]; then
+            echo > "$(echo -e $text | grep . | sed -n ${i}p | tr " " "_")_$(echo -e "$files" | grep . | sed -n ${j}p | sed "s/\//\n/g" | tail -n1 | sed "s/.plt/.csv/g")"
+            get_data "$(echo -e "$files" | grep . | sed -n ${j}p)" $(echo -e $text | grep . | sed -n ${i}p) >> "$path/$(echo -e $text | grep . | sed -n ${i}p | tr " " "_")_$(echo -e "$files" | grep . | sed -n ${j}p | sed "s/\//\n/g" | tail -n1 | sed "s/.plt/.csv/g")"
+        else
+            get_data "$(echo -e "$files" | grep . | sed -n ${j}p)" $(echo -e $text | grep . | sed -n ${i}p)
+            echo "$(echo -e $text | grep . | sed -n ${i}p | tr " " "_")_$(echo -e "$files" | grep . | sed -n ${j}p | sed "s/\//\n/g" | tail -n1 | sed "s/.plt/.csv/g")"
+        fi
+    done
+done
+
+if [ "$ask_output" ]; then
+    echo $path
+fi
+
+#echo -e $text | grep . | wc -l
+#echo -e "$dataset" | zenity --list --checklist --multiple --column="Select Lines" --column=index --column=Electrode --column=Parameter --hide-column=2
+#zenity --forms --add-combo Electrode --combo-params "$(echo $(echo "$params" | awk '{print $1}' | sort | uniq) | tr " " "\|")" --add-combo Parameter --combo-params "$(echo $(echo "$params" | awk '{print $2}' | sort | uniq) | tr " " "|")"

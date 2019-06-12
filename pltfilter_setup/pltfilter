@@ -1,0 +1,47 @@
+#!/bin/bash
+
+filt3r(){ filename="$(echo $1 | tr "_" "\n" | head -n3 | tr "\n" "_")"; echo $filename; }
+
+xfile_data=$(goat -m -n --file-text="Select X-axis File" --list-title="Extract X-axis Parameter" --list-text="Select parameter to extract")
+if [ -z "$xfile_data" ]; then
+    exit 1 || return 1
+fi
+xfile="$(echo "$xfile_data" | tail -n1)"
+xdata="$(echo "$(echo "$xfile_data" | sed "s/$xfile//g" | grep .)")"
+
+yfiles_data=$(goat -n --file-text="Select Y-axis Files" --list-title="Extract Y-axis Parameters" --list-text="Select parameters to extract")
+if [ -z "$yfiles_data" ]; then
+    exit 1 || return 1
+fi
+
+output_file=$(zenity --title "Save Output" --file-selection --save --filename="plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%T_%d_%m_%y).csv" --file-filter="*.csv")
+if [ -z "$output_file" ]; then
+    exit 1 || return 1
+fi
+if [ -z "$(echo $output_file | grep ".csv")" ]; then
+    output_file+="$output_file.csv"
+fi
+touch $(echo $output_file | sed "s/.csv/.tmp_csv/g")
+
+tmp_folder=".tmp_$(date | tr " " "_")"
+mkdir $tmp_folder
+yfilenames="$(filt3r $xfile)$(echo $xfile | sed "s/.*_n\|.csv//g")\t"
+ydata=""
+for i in $(seq 1 $(echo "$yfiles_data" | wc -l)); do
+    if [ "$(echo "$yfiles_data" | sed -n ${i}p | grep ".csv")" ]; then
+        echo -e $ydata | grep . > $tmp_folder/$i
+        yfilenames+="$(filt3r $(echo "$yfiles_data" | sed -n ${i}p))$(echo "$yfiles_data" | sed -n ${i}p | sed "s/.*_n\|.csv//g")\t"
+        ydata=""
+    else
+        ydata+="$(echo "$yfiles_data" | sed -n ${i}p)\n"
+    fi
+done
+ys=$(echo $(ls -d $PWD/$tmp_folder/*))
+
+echo "$xdata" > $tmp_folder/x_file
+
+paste $tmp_folder/x_file $ys > $output_file
+echo -e "$yfilenames\n$(cat $output_file)" > $output_file
+
+rm $(echo $output_file | sed "s/.csv/.tmp_csv/g")
+rm -r $tmp_folder

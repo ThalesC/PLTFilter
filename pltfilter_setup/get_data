@@ -1,0 +1,9 @@
+#!/bin/bash
+
+file="$1"
+param="$2"
+
+datalines=$(echo $(cat -n $file | grep "Data\|\}" | grep -A1 Data | awk '{print $1}') | awk '{print $1","$2"p"}')
+
+params=$(all_params $file | wc -l)
+echo $(sed -n $datalines $file | sed "s/Data {\|}//g" | grep .) | tr " " "\n" | sed -n $param~${params}p
