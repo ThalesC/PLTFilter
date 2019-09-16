@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$(ls $HOME | grep ".PLTFilter")" ]; then
+if [ -z "$(ls -a $HOME | grep ".PLTFilter")" ]; then
     mkdir $HOME/.PLTFilter
 fi
 
@@ -9,4 +9,5 @@ cp all_params get_data goat pltfilter $HOME/.PLTFilter
 
 if [ -z "$(cat $HOME/.bashrc | grep "PATH+=:$HOME/.PLTFilter")" ]; then
     echo "PATH+=:$HOME/.PLTFilter" >> $HOME/.bashrc
+    PATH+=:$HOME/.PLTFilter
 fi
