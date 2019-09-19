@@ -4,7 +4,7 @@ DELIMITER=","
 
 help(){
     echo "
-PLTFilter generates plain text files of ordered data from .plt files.
+PLTFilter generates csv from .plt files.
 Default output is a csv template.
 "
 }
@@ -56,7 +56,12 @@ fi
 #if [ -z "$(echo $output_file | grep ".csv")" ]; then
 #    output_file="$output_file.csv"
 #fi
-touch $(echo $output_file | sed "s/.csv/.tmp_csv/g")
+if [ -z "$(echo $output_file | grep "\.csv")" ]; then
+    touch $output_file.tmp_csv
+    output_file+=".csv"
+else
+    touch $(echo $output_file | sed "s/\.csv/\.tmp_csv/g")
+fi
 
 tmp_folder=".tmp_$(date | tr " " "_")"
 mkdir $tmp_folder
