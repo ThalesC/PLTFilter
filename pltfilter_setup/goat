@@ -59,7 +59,7 @@ fi
 for i in $dataset_params; do
     if [ $((mod%3)) -eq 2 ]; then
         text+="$i\n"
-    else 
+    else
         text+="$i "
     fi
     mod=$((mod+1))

@@ -4,13 +4,13 @@ DELIMITER=","
 
 help(){
     echo "
-PLTFilter generates csv from .plt files.
-Default output is a csv template.
+PLTFilter generates  from .plt files.
+Default output filetype is csv.
 "
 }
 usage(){
     echo "
-Usage: pltfilter [-h] [-t FILETYPE] [-d DELIMITER]
+Usage: pltfilter [-h] [-d DELIMITER]
        -d DELIMITER   Set delimiter and output plain text file, default is comma
        -h             Display thie help and exit
 "
