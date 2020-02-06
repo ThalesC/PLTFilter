@@ -4,21 +4,28 @@ DELIMITER=","
 
 help(){
     echo "
-PLTFilter generates  from .plt files.
+PLTFilter rearrange the data from .plt files.
 Default output filetype is csv.
 "
 }
 usage(){
     echo "
-Usage: pltfilter [-h] [-d DELIMITER]
-       -d DELIMITER   Set delimiter and output plain text file, default is comma
-       -h             Display thie help and exit
+USAGE:
+  pltfilter [-h] [-d DELIMITER]
+
+FLAGS:
+  -d DELIMITER  set delimiter, if not set uses comma, overrides env variable (default: $PLTFILTER_DELIMITER)
+  -h            display thie help and exit
+
+ENVIRONMENT VARIABLES:
+  PLTFILTER_FOLDER     set default folder to get .plt files, if not set uses pltfilter running folder instead (example: export PLTFILTER_FOLDER="/path/to/plt/files")
+  PLTFILTER_DELIMITER  set delimiter instead of comma (example: export PLTFILTER_DELIMITER=";")
 "
 }
 
 filt3r(){ filename="$(echo $1 | tr "_" "\n" | head -n3 | tr "\n" "_")"; echo $filename; }
 
-while getopts ":hd:" opt; do
+while getopts "hd:" opt; do
     case $opt in
         h)
             help
@@ -29,13 +36,16 @@ while getopts ":hd:" opt; do
             DELIMITER="$OPTARG"
             ;;
         default)
-            echo "$OPTARG not recognized"
+            echo "Error: $OPTARG not recognized"
             usage
             exit 1 || return 1
             ;;
     esac
 done
 shift $((OPTIND-1))
+
+[[ $DELIMITER ]] || DELIMITER=$PLTFILTER_DELIMITER
+[[ $DELIMITER ]] || DELIMITER=","
 
 xfile_data=$(goat -m -n --file-text="Select X-axis File" --list-title="Extract X-axis Parameter" --list-text="Select parameter to extract")
 if [ -z "$xfile_data" ]; then
@@ -49,10 +59,13 @@ if [ -z "$yfiles_data" ]; then
     exit 1 || return 1
 fi
 
-output_file=$(zenity --title "Save Output" --file-selection --save --filename="plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%T_%d_%m_%y).csv" --file-filter="*.csv" --file-filter="*")
+OUTPATH=$(cat $HOME/.PLTFilter/.oldsave 2>/dev/null)
+[[ $OUTPATH ]] && OUTPATH+=/
+output_file=$(zenity --title "Save Output" --file-selection --save --filename="${OUTPATH}plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%T_%d_%m_%y).csv" --file-filter="*.csv" --file-filter="*")
 if [ -z "$output_file" ]; then
     exit 1 || return 1
 fi
+realpath $(dirname $output_file) > $HOME/.PLTFilter/.oldsave
 
 if [ -z "$(echo $output_file | grep "\.csv")" ]; then
     touch $output_file.tmp_csv

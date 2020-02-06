@@ -25,15 +25,18 @@ for i; do
 done
 files=$(echo -e $files)
 
+if [ "$PLTFILTER_FOLDER" ]; then
+    filepath="--filename=$PLTFILTER_FOLDER"
+fi
+
 if [ -z "$files" ]; then
-    files=$(zenity --title "$zenity_text" --file-selection $multiple --file-filter="*.plt" | tr "|" "\n")
+    files=$(zenity --title "$zenity_text" --file-selection $multiple $filepath --file-filter="*.plt" | tr "|" "\n")
 fi
 
 if [ -z "$files" ]; then
     exit 1 || return 1
 fi
 
-#files="$file"
 file_quantity=$(echo "$files" | grep . | wc -l)
 
 params="$(all_params $files)"
