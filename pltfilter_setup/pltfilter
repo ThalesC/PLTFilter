@@ -53,9 +53,7 @@ output_file=$(zenity --title "Save Output" --file-selection --save --filename="p
 if [ -z "$output_file" ]; then
     exit 1 || return 1
 fi
-#if [ -z "$(echo $output_file | grep ".csv")" ]; then
-#    output_file="$output_file.csv"
-#fi
+
 if [ -z "$(echo $output_file | grep "\.csv")" ]; then
     touch $output_file.tmp_csv
     output_file+=".csv"

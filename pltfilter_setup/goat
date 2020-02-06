@@ -90,7 +90,3 @@ done
 if [ "$ask_output" ]; then
     echo $path
 fi
-
-#echo -e $text | grep . | wc -l
-#echo -e "$dataset" | zenity --list --checklist --multiple --column="Select Lines" --column=index --column=Electrode --column=Parameter --hide-column=2
-#zenity --forms --add-combo Electrode --combo-params "$(echo $(echo "$params" | awk '{print $1}' | sort | uniq) | tr " " "\|")" --add-combo Parameter --combo-params "$(echo $(echo "$params" | awk '{print $2}' | sort | uniq) | tr " " "|")"

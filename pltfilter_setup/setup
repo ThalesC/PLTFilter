@@ -8,6 +8,6 @@ chmod +x all_params get_data goat pltfilter
 cp all_params get_data goat pltfilter $HOME/.PLTFilter
 
 if [ -z "$(cat $HOME/.bashrc | grep "PATH+=:$HOME/.PLTFilter")" ]; then
-    echo -e "\n## PLTFilter path\nPATH+=:$HOME/.PLTFilter" >> $HOME/.bashrc
-    PATH+=:$HOME/.PLTFilter
+    echo -e "\n## PLTFilter path\nexport PATH+=:$HOME/.PLTFilter" >> $HOME/.bashrc
+    exec bash
 fi
