@@ -18,7 +18,7 @@ FLAGS:
 ENVIRONMENT VARIABLES:
   PLTFILTER_DELIMITER  set delimiter instead of comma (example: export PLTFILTER_DELIMITER=\";\")
   PLTFILTER_FOLDER     set default folder to get .plt files, if not set uses pltfilter running folder instead (example: export PLTFILTER_FOLDER=\"/path/to/plt/files\")
-  PLTFILTER_OUTFOLDER  set default folder to save output files (example: export PLTFILTER_OUTFOLDER=\"/path/to/saved/files\")
+  PLTFILTER_OUTFOLDER  set default folder to save output files, uses default save name with timestamp (example: export PLTFILTER_OUTFOLDER=\"/path/to/saved/files\")
 "
 }
 

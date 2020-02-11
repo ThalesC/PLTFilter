@@ -1,22 +1,18 @@
+
 SETUP
-========
+=====
 
-Ir até a pasta que contém o anexo, extrair os scripts e entrar na pasta
-
-```
-$ unzip pltfilter_setup.zip
-$ cd pltfilter_setup/
-```
-
-Executar setup script
+Extrair o conteúdo do arquivo .zip e executar o script de setup
 
 ```
+$ unzip /path/to/PLTFilter-master.zip
+$ cd /path/to/PLTFilter-master/pltfilter_setup/
 $ chmod +x setup
 $ ./setup
 ```
 
-TUTORIAL
-========
+USO BÁSICO
+==========
 
 Executar script principal
 
@@ -24,7 +20,7 @@ Executar script principal
 $ pltfilter
 ```
 
-Selecionar um único file .plt para extrair parâmetro referente ao eixo X.
+Selecionar um único arquivo plt para extrair parâmetro referente ao eixo X.
 
 ![1](http://imgur.com/5rfBVHQl.png)
 
@@ -32,7 +28,7 @@ Selecionar parâmetro a ser extraído ao eixo X.
 
 ![2](http://imgur.com/PKPETPIl.png)
 
-Selecionar um ou mais files .plt para extrair parâmetros referentes ao eixo Y.
+Selecionar um ou mais arquivos plt para extrair parâmetros referentes ao eixo Y.
 
 ![3](http://imgur.com/L5OTmPxl.png)
 
@@ -40,8 +36,14 @@ Selecionar parâmetros a serem extraídos ao eixo Y.
 
 ![4](http://imgur.com/N9wyo1ul.png)
 
-Definir onde será salvo o output.
+Definir onde será salvo o _plot.csv_.
 
 ![5](http://imgur.com/8Eex6XJl.png)
 
-Enjoy!
+FLAGS E EXPORTS
+=====================
+
+* **PLTFILTER_DELIMITER** - Utiliza vírgula se não for definido
+* **PLTFILTER_FOLDER** - Utiliza pasta de execução do _pltfilter_ se não for definido
+* **PLTFILTER_OUTFOLDER** - Pasta padrão onde serão salvos novos _plots_ com nome padrão e timestamp
+
