@@ -6,5 +6,3 @@ lines=$(cat -n $file | grep "\[\|]" | grep -A1 datasets | awk '{print $1}')
 echo $(
     for i in $(seq $lines); do
         sed -n ${i}p "$file" | sed "s/datasets  \= \[\|\]//g"; done) | sed "s/\" \| \"/=/g" | sed "s/ /_/g" | sed "s/\"//g" | tr "=" "\n" | tr "_" " "
-    done
-)

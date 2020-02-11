@@ -1,11 +1,9 @@
 #!/bin/bash
 
-DELIMITER=","
-
 help(){
     echo "
 PLTFilter rearrange the data from .plt files.
-Default output filetype is csv.
+Default output is csv.
 "
 }
 usage(){
@@ -14,12 +12,13 @@ USAGE:
   pltfilter [-h] [-d DELIMITER]
 
 FLAGS:
-  -d DELIMITER  set delimiter, if not set uses comma, overrides env variable (default: $PLTFILTER_DELIMITER)
+  -d DELIMITER  set delimiter, if not set uses comma, overrides env variable PLTFILTER_DELIMITER
   -h            display thie help and exit
 
 ENVIRONMENT VARIABLES:
-  PLTFILTER_FOLDER     set default folder to get .plt files, if not set uses pltfilter running folder instead (example: export PLTFILTER_FOLDER="/path/to/plt/files")
-  PLTFILTER_DELIMITER  set delimiter instead of comma (example: export PLTFILTER_DELIMITER=";")
+  PLTFILTER_DELIMITER  set delimiter instead of comma (example: export PLTFILTER_DELIMITER=\";\")
+  PLTFILTER_FOLDER     set default folder to get .plt files, if not set uses pltfilter running folder instead (example: export PLTFILTER_FOLDER=\"/path/to/plt/files\")
+  PLTFILTER_OUTFOLDER  set default folder to save output files (example: export PLTFILTER_OUTFOLDER=\"/path/to/saved/files\")
 "
 }
 
@@ -36,7 +35,7 @@ while getopts "hd:" opt; do
             DELIMITER="$OPTARG"
             ;;
         default)
-            echo "Error: $OPTARG not recognized"
+            echo "Error: \"$OPTARG\" not recognized"
             usage
             exit 1 || return 1
             ;;
@@ -59,13 +58,19 @@ if [ -z "$yfiles_data" ]; then
     exit 1 || return 1
 fi
 
-OUTPATH=$(cat $HOME/.PLTFilter/.oldsave 2>/dev/null)
-[[ $OUTPATH ]] && OUTPATH+=/
-output_file=$(zenity --title "Save Output" --file-selection --save --filename="${OUTPATH}plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%T_%d_%m_%y).csv" --file-filter="*.csv" --file-filter="*")
-if [ -z "$output_file" ]; then
-    exit 1 || return 1
+if [ "$(ls $PLTFILTER_OUTFOLDER 2>/dev/null)" ]; then
+    output_file=$PLTFILTER_OUTFOLDER
+    [[ $(echo $output_file | grep -o . | tail -n1 | grep "/") ]] || output_file+=/
+    output_file+=plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%y_%m_%d_%T).csv
+else
+    OUTPATH=$(cat $HOME/.PLTFilter/.oldsave 2>/dev/null)
+    [[ $OUTPATH ]] && OUTPATH+=/
+    output_file=$(zenity --title "Save Output" --file-selection --save --filename="${OUTPATH}plot_$(echo $xfile | sed "s/$(filt3r $xfile)\|_n.*\|.csv//g")_$(date +%y_%m_%d_%T).csv" --file-filter="*.csv" --file-filter="*")
+    if [ -z "$output_file" ]; then
+        exit 1 || return 1
+    fi
+    realpath $(dirname $output_file) > $HOME/.PLTFilter/.oldsave
 fi
-realpath $(dirname $output_file) > $HOME/.PLTFilter/.oldsave
 
 if [ -z "$(echo $output_file | grep "\.csv")" ]; then
     touch $output_file.tmp_csv
