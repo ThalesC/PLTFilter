@@ -40,10 +40,13 @@ Definir onde será salvo o _plot.csv_.
 
 ![5](http://imgur.com/8Eex6XJl.png)
 
-FLAGS E EXPORTS
-=====================
+FLAGS
+=====
+- -**d DELIMITER** - Define caractere como separador, utiliza vírgula se não for definido, ignora export PLTFILTER_DELIMITER
+- -**h** - Apresenta diálogo de ajuda
 
-* **PLTFILTER_DELIMITER** - Utiliza vírgula se não for definido
-* **PLTFILTER_FOLDER** - Utiliza pasta de execução do _pltfilter_ se não for definido
-* **PLTFILTER_OUTFOLDER** - Pasta padrão onde serão salvos novos _plots_ com nome padrão e timestamp
-
+EXPORTS
+=======
+- **PLTFILTER_DELIMITER** - Define caractere como separador, utiliza vírgula se não for definido
+- **PLTFILTER_FOLDER** - Pasta padrão para selecionar arquivos, utiliza pasta de execução do _pltfilter_ se não for definido
+- **PLTFILTER_OUTFOLDER** - Pasta padrão onde serão salvos novos plots, com nome padrão e timestamp

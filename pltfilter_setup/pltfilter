@@ -2,8 +2,7 @@
 
 help(){
     echo "
-PLTFilter rearrange the data from .plt files.
-Default output is csv.
+PLTFilter rearranges the data from .plt files into readable csv.
 "
 }
 usage(){
@@ -13,7 +12,7 @@ USAGE:
 
 FLAGS:
   -d DELIMITER  set delimiter, if not set uses comma, overrides env variable PLTFILTER_DELIMITER
-  -h            display thie help and exit
+  -h            display this help and exit
 
 ENVIRONMENT VARIABLES:
   PLTFILTER_DELIMITER  set delimiter instead of comma (example: export PLTFILTER_DELIMITER=\";\")
