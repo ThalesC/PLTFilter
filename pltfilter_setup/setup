@@ -1,13 +1,16 @@
 #!/bin/bash
 
+pltfolder="$HOME/.PLTFilter"
 if [ -z "$(ls -a $HOME | grep ".PLTFilter")" ]; then
-    mkdir $HOME/.PLTFilter
+    mkdir $pltfolder
+else
+    rm $pltfolder/all_params $pltfolder/get_data $pltfolder/goat $pltfolder/pltfilter 2> /dev/null
 fi
 
 chmod +x all_params get_data goat pltfilter
-cp all_params get_data goat pltfilter $HOME/.PLTFilter
+cp all_params get_data goat pltfilter $pltfolder
 
-if [ -z "$(cat $HOME/.bashrc | grep "PATH+=:$HOME/.PLTFilter")" ]; then
-    echo -e "\n## PLTFilter path\nexport PATH+=:$HOME/.PLTFilter" >> $HOME/.bashrc
+if [ -z "$(cat $HOME/.bashrc | grep "PATH+=:$pltfolder")" ]; then
+    echo -e "\n## PLTFilter path\nexport PATH+=:$pltfolder" >> $HOME/.bashrc
     exec bash
 fi
