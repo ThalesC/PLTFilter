@@ -82,7 +82,7 @@ tmp_folder=".tmp_$(date | tr " " "_")"
 mkdir $tmp_folder
 yfilenames="$(filt3r $xfile)$(echo $xfile | sed "s/.*_n\|.csv//g")"
 ydata=""
-for i in $(seq 1 $(echo "$yfiles_data" | wc -l)); do
+for i in $(seq -w 1 $(echo "$yfiles_data" | wc -l)); do
     if [ "$(echo "$yfiles_data" | sed -n ${i}p | grep ".csv")" ]; then
         echo -e $ydata | grep . > $tmp_folder/$i
         yfilenames+="$DELIMITER$(filt3r $(echo "$yfiles_data" | sed -n ${i}p))$(echo "$yfiles_data" | sed -n ${i}p | sed "s/.*_n\|.csv//g")"
@@ -99,4 +99,4 @@ paste -d "$DELIMITER" $tmp_folder/x_file $ys > $output_file
 echo -e "$yfilenames\n$(cat $output_file)" > $output_file
 
 rm $(echo $output_file | sed "s/.csv/.tmp_csv/g")
-rm -r $tmp_folder
+#rm -r $tmp_folder
