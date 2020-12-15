@@ -99,4 +99,4 @@ paste -d "$DELIMITER" $tmp_folder/x_file $ys > $output_file
 echo -e "$yfilenames\n$(cat $output_file)" > $output_file
 
 rm $(echo $output_file | sed "s/.csv/.tmp_csv/g")
-#rm -r $tmp_folder
+rm -r $tmp_folder
